@@ -134,12 +134,12 @@ def minimax(board, stone, depth, maximizing_player, alpha=-math.inf, beta=math.i
         return min_eval
 
 # FoxAI クラス
-class FoxAI:
+class koaraAI:
     def name(self):
-        return "FoxAI"
+        return "koaraAI"
     
     def face(self):
-        return "🦊"
+        return "🐨"
     
     def place(self, board, stone):
         valid_moves = get_valid_moves(board, stone)
