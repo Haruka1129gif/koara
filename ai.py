@@ -26,6 +26,14 @@ def evaluate_board_with_middle(board, stone):
     score -= stone_count * 0.5  # 石を多く取りすぎるとペナルティ
     return score
 
+def get_valid_moves(board, stone):
+    valid_moves = []
+    for y in range(len(board)):
+        for x in range(len(board[0])):
+            if can_place_x_y(board, stone, x, y):
+                valid_moves.append((x, y))
+    return valid_moves
+
 def minimax_with_middle(board, stone, depth, maximizing_player, alpha=-math.inf, beta=math.inf):
     """
     中割りを考慮したミニマックス法。
