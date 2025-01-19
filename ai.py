@@ -1,7 +1,4 @@
-import math
-import time
-from copy import deepcopy as copy
-
+mport math
 BLACK = 1
 WHITE = 2
 
@@ -77,28 +74,36 @@ def evaluate_board(board, stone):
                 score += weight[y][x]
             elif board[y][x] == opponent:
                 score -= weight[y][x]
+    score += count_stable_stones(board, stone) * 10
     return score
+
+# 安定石を数える関数
+def count_stable_stones(board, stone):
+    stable = 0
+    directions = [(-1, 0), (1, 0), (0, -1), (0, 1)]
+    for y in range(len(board)):
+        for x in range(len(board[0])):
+            if board[y][x] == stone and is_stable(board, stone, x, y, directions):
+                stable += 1
+    return stable
+
+# 石が安定しているか判定
+def is_stable(board, stone, x, y, directions):
+    for dx, dy in directions:
+        nx, ny = x, y
+        while 0 <= nx < len(board[0]) and 0 <= ny < len(board):
+            if board[ny][nx] != stone:
+                return False
+            nx += dx
+            ny += dy
+    return True
 
 # 中割り回避ロジック
 def creates_disadvantageous_situation(board, stone):
-    if not board or not board[0]:
-        return False
-
     opponent = 3 - stone
     valid_moves_opponent = get_valid_moves(board, opponent)
-    
-    if not valid_moves_opponent:
-        return False
-    
-    corner_positions = [
-        (0, 0),
-        (0, len(board[0]) - 1),
-        (len(board) - 1, 0),
-        (len(board) - 1, len(board[0]) - 1)
-    ]
-    
     for x, y in valid_moves_opponent:
-        if (x, y) in corner_positions:
+        if (x, y) in [(0, 0), (0, len(board[0]) - 1), (len(board) - 1, 0), (len(board) - 1, len(board[0]) - 1)]:
             return True
     return False
 
@@ -128,7 +133,7 @@ def minimax(board, stone, depth, maximizing_player, alpha=-math.inf, beta=math.i
                 break
         return min_eval
 
-# KoaraAI クラス
+# FoxAI クラス
 class koaraAI:
     def name(self):
         return "koaraAI"
@@ -154,46 +159,3 @@ class koaraAI:
                 best_move = (x, y)
         
         return best_move
-
-# 実行部分
-def run_othello(blackai, whiteai, board):
-    black_time, white_time = 0, 0
-    moved = True
-
-    while moved:
-        moved = False
-        if can_place(board, BLACK):
-            start = time.time()
-            move = blackai.place(copy(board), BLACK)
-            black_time += time.time() - start
-
-            if move is None:
-                print(f'黒 {blackai.face()}は置ける場所があるのにどこにも置けませんでした。反則負けです。')
-                return
-
-            x, y = move
-            if not can_place_x_y(board, BLACK, x, y):
-                print(f'黒 {blackai.face()}が置けない場所に置こうとしました: {(x, y)}。反則負けです。')
-                return
-
-            apply_move(board, BLACK, x, y)
-            moved = True
-
-        if can_place(board, WHITE):
-            start = time.time()
-            move = whiteai.place(copy(board), WHITE)
-            white_time += time.time() - start
-
-            if move is None:
-                print(f'白 {whiteai.face()}は置ける場所があるのにどこにも置けませんでした。反則負けです。')
-                return
-
-            x, y = move
-            if not can_place_x_y(board, WHITE, x, y):
-                print(f'白 {whiteai.face()}が置けない場所に置こうとしました: {(x, y)}。反則負けです。')
-                return
-
-            apply_move(board, WHITE, x, y)
-            moved = True
-
-run_othello(koaraAI(), koaraAI())
