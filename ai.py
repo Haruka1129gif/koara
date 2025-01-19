@@ -141,27 +141,25 @@ class koaraAI:
     def face(self):
         return "🐨"
 
+# 例: place メソッドの戻り値を確認して、None ならスキップ
     def place(self, board, stone):
         valid_moves = get_valid_moves(board, stone)
-        
-        # 有効な手がない場合は None を返す
         if not valid_moves:
-            return None
-
+            return None  # もし有効な手がないなら None を返す
+    
         best_move = None
         best_score = -math.inf
-
+    
         for x, y in valid_moves:
             temp_board = apply_move(board, stone, x, y)
-            
-            # 中割り回避
+            # 不利な状況を作らないかチェック
             if creates_disadvantageous_situation(temp_board, stone):
-                continue
-            
+                continue  # 不利な手を避ける
+    
             score = minimax(temp_board, 3 - stone, depth=5, maximizing_player=False)
-
+    
             if score > best_score:
                 best_score = score
                 best_move = (x, y)
-
+    
         return best_move
