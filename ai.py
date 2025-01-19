@@ -137,34 +137,31 @@ def minimax(board, stone, depth, maximizing_player, alpha=-math.inf, beta=math.i
 class koaraAI:
     def name(self):
         return "koaraAI"
-    
+
     def face(self):
         return "🐨"
-    
+
     def place(self, board, stone):
         valid_moves = get_valid_moves(board, stone)
+        
+        # 有効な手がない場合は None を返す
         if not valid_moves:
-            return None  # ここでNoneを返す代わりにパスする
+            return None
+
         best_move = None
         best_score = -math.inf
-        
+
         for x, y in valid_moves:
             temp_board = apply_move(board, stone, x, y)
+            
+            # 中割り回避
             if creates_disadvantageous_situation(temp_board, stone):
                 continue
+            
             score = minimax(temp_board, 3 - stone, depth=5, maximizing_player=False)
+
             if score > best_score:
                 best_score = score
                 best_move = (x, y)
-        
-        return best_move
 
-# run_othello内でのNoneチェックの追加
-def run_othello(blackai, whiteai, board=None, width=6):
-    # 略
-    x, y = whiteai.place(copy(board), WHITE)
-    if x is None or y is None:
-        # パス処理
-        print("White passes.")
-        return
-    # その他のコード...
+        return best_move
