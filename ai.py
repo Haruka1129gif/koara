@@ -133,33 +133,37 @@ def minimax(board, stone, depth, maximizing_player, alpha=-math.inf, beta=math.i
                 break
         return min_eval
 
-# koaraAI クラス
 class koaraAI:
     def name(self):
-        return "koaraAI"
+        return "KoaraAI"
 
     def face(self):
         return "🐨"
 
-# 例: place メソッドの戻り値を確認して、None ならスキップ
     def place(self, board, stone):
         valid_moves = get_valid_moves(board, stone)
         if not valid_moves:
-            return None  # もし有効な手がないなら None を返す
-    
+            # 有効な手がない場合、無効な手を返す（または特定の動作を行う）
+            # ここでは(-1, -1)を返すことで無効な手として扱わせます
+            return (-1, -1)
+
         best_move = None
         best_score = -math.inf
-    
+
         for x, y in valid_moves:
             temp_board = apply_move(board, stone, x, y)
             # 不利な状況を作らないかチェック
             if creates_disadvantageous_situation(temp_board, stone):
                 continue  # 不利な手を避ける
-    
+
             score = minimax(temp_board, 3 - stone, depth=5, maximizing_player=False)
-    
+
             if score > best_score:
                 best_score = score
                 best_move = (x, y)
-    
+
+        if best_move is None:
+            # もし最良の手が見つからなかった場合も無効な手を返す
+            return (-1, -1)
+
         return best_move
