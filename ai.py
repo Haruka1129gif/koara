@@ -1,5 +1,4 @@
 import math
-
 BLACK = 1
 WHITE = 2
 
@@ -104,7 +103,7 @@ def creates_disadvantageous_situation(board, stone):
     opponent = 3 - stone
     valid_moves_opponent = get_valid_moves(board, opponent)
     for x, y in valid_moves_opponent:
-        if (x, y) in [(0, 0), (0, len(board[0]) - 1), (len(board) - 1, 0), (len(board[0]) - 1, len(board) - 1)]:
+        if (x, y) in [(0, 0), (0, len(board[0]) - 1), (len(board) - 1, 0), (len(board[0]) - 1, len(board[0]) - 1)]:
             return True
     return False
 
@@ -134,7 +133,7 @@ def minimax(board, stone, depth, maximizing_player, alpha=-math.inf, beta=math.i
                 break
         return min_eval
 
-# FoxAI クラス
+# koaraAI クラス
 class koaraAI:
     def name(self):
         return "koaraAI"
@@ -145,8 +144,7 @@ class koaraAI:
     def place(self, board, stone):
         valid_moves = get_valid_moves(board, stone)
         if not valid_moves:
-            return None
-        
+            return None  # ここでNoneを返す代わりにパスする
         best_move = None
         best_score = -math.inf
         
@@ -161,66 +159,12 @@ class koaraAI:
         
         return best_move
 
-# プレイヤーの番を進める関数
-def play_turn(board, stone, player_ai):
-    """
-    現在のプレイヤーの番を実行し、置けない場合はスキップします。
-    """
-    valid_moves = get_valid_moves(board, stone)
-    if not valid_moves:
-        # 手がない場合はスキップ
-        print(f"{player_ai.face()} は置ける場所がないためスキップします。")
-        return False  # 番をスキップした場合は False を返す
-
-    # AIが手を選ぶ
-    x, y = player_ai.place(board, stone)
-    if (x, y) is None or (x, y) not in valid_moves:
-        print(f"{player_ai.face()} は置けない場所 {(x, y)} を選びました。反則負けです。")
-        return True  # 不正手の場合はゲーム終了
-    # 手を適用する
-    board = apply_move(board, stone, x, y)
-    print(f"{player_ai.face()} は {(x, y)} に置きました。")
-    return True  # 正常に手を進めた場合は True を返す
-
-# メインのゲームループ
-def run_othello(black_ai, white_ai):
-    """
-    オセロゲームを実行します。
-    """
-    current_board = [row[:] for row in board]  # 初期の盤面をコピー
-    current_turn = BLACK  # 黒から開始
-    players = {BLACK: black_ai, WHITE: white_ai}
-
-    while True:
-        # 現在のプレイヤーを取得
-        current_player = players[current_turn]
-
-        # プレイヤーの番を実行
-        moved = play_turn(current_board, current_turn, current_player)
-
-        if moved is None:  # 不正手があればゲーム終了
-            print(f"{current_player.face()} の反則によりゲーム終了です。")
-            break
-
-        # 手が打てた場合は次のプレイヤーへ
-        if moved:
-            current_turn = 3 - current_turn  # 黒⇔白を切り替え
-
-        # 両者が置けない場合はゲーム終了
-        if not get_valid_moves(current_board, BLACK) and not get_valid_moves(current_board, WHITE):
-            print("どちらも置ける場所がありません。ゲーム終了です。")
-            break
-
-    # 最終結果を表示
-    black_count = sum(row.count(BLACK) for row in current_board)
-    white_count = sum(row.count(WHITE) for row in current_board)
-    print(f"ゲーム終了: 黒 {black_count}, 白 {white_count}")
-    if black_count > white_count:
-        print(f"黒 {black_ai.face()} の勝利です！")
-    elif black_count < white_count:
-        print(f"白 {white_ai.face()} の勝利です！")
-    else:
-        print("引き分けです！")
-
-# ゲーム実行
-run_othello(koaraAI(), koaraAI())
+# run_othello内でのNoneチェックの追加
+def run_othello(blackai, whiteai, board=None, width=6):
+    # 略
+    x, y = whiteai.place(copy(board), WHITE)
+    if x is None or y is None:
+        # パス処理
+        print("White passes.")
+        return
+    # その他のコード...
