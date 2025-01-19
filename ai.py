@@ -1,4 +1,4 @@
-mport math
+import math
 BLACK = 1
 WHITE = 2
 
