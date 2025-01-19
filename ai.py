@@ -1,4 +1,5 @@
 import math
+
 BLACK = 1
 WHITE = 2
 
@@ -59,12 +60,12 @@ def can_place_x_y(board, stone, x, y):
 # 評価関数
 def evaluate_board(board, stone):
     weight = [
-    [20, -3, 11, 11, -3, 20],
-    [-3, -7, -4, -4, -7, -3],
-    [11, -4, 2, 2, -4, 11],
-    [11, -4, 2, 2, -4, 11],
-    [-3, -7, -4, -4, -7, -3],
-    [20, -3, 11, 11, -3, 20]
+        [20, -3, 11, 11, -3, 20],
+        [-3, -7, -4, -4, -7, -3],
+        [11, -4,  2,  2, -4, 11],
+        [11, -4,  2,  2, -4, 11],
+        [-3, -7, -4, -4, -7, -3],
+        [20, -3, 11, 11, -3, 20]
     ]
     score = 0
     opponent = 3 - stone
@@ -133,7 +134,7 @@ def minimax(board, stone, depth, maximizing_player, alpha=-math.inf, beta=math.i
                 break
         return min_eval
 
-# FoxAI クラス
+# KoaraAI クラス
 class koaraAI:
     def name(self):
         return "koaraAI"
@@ -159,3 +160,25 @@ class koaraAI:
                 best_move = (x, y)
         
         return best_move
+
+# ゲーム進行ロジック（例）
+def run_othello(blackai, whiteai, board, width=6):
+    current_player = BLACK
+    while True:
+        ai = blackai if current_player == BLACK else whiteai
+        move = ai.place(board, current_player)
+        
+        if move is None:
+            print(f"{ai.name()} passes")
+            if not get_valid_moves(board, 3 - current_player):
+                print("Game over")
+                break
+            current_player = 3 - current_player
+            continue
+        
+        x, y = move
+        board = apply_move(board, current_player, x, y)
+        print(f"{ai.name()} places at ({x}, {y})")
+        
+        # 表示（省略）
+        current_player = 3 - current_player
