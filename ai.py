@@ -145,7 +145,7 @@ class koaraAI:
         if not valid_moves:
             # 有効な手がない場合、無効な手を返す（または特定の動作を行う）
             # ここでは(-1, -1)を返すことで無効な手として扱わせます
-            return (-1, -1)
+            return None
 
         best_move = None
         best_score = -math.inf
@@ -164,6 +164,6 @@ class koaraAI:
 
         if best_move is None:
             # もし最良の手が見つからなかった場合も無効な手を返す
-            return (-1, -1)
+            return None
 
         return best_move
